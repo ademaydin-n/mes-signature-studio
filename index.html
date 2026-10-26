@@ -16,9 +16,25 @@ const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>'
 const values=()=>Object.fromEntries(ids.map(id=>[id,inputs[id].value.trim()]));
 const assetUrl=path=>new URL(path,location.href).href;
 function makeSignature(v,absolute=false){
- const a=p=>escapeHTML(absolute?assetUrl(p):p), name=escapeHTML(v.name||'Ad Soyad'),role=escapeHTML(v.role||'Kulüp Görevi'),email=escapeHTML(v.email||'eposta@ornek.com'),phone=escapeHTML(v.phone||'');
- const phoneRow=phone?`<tr><td style="padding-top:5px;font-size:12px;color:#344b61">${phone}</td></tr>`:'';
- return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:570px"><tr><td valign="top" style="padding:0 14px 0 0;width:88px"><img src="${a(LOGO)}" width="76" height="76" alt="MES" style="display:block;width:76px;height:76px;object-fit:contain;border:0"></td><td valign="top" style="border-left:3px solid #153b62;padding-left:14px"><table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif"><tr><td style="font-size:17px;line-height:22px;font-weight:bold;color:#153b62">${name}</td></tr><tr><td style="padding-top:3px;font-size:12px;color:#344b61">${role}</td></tr><tr><td style="padding-top:8px;font-size:12px;font-weight:bold;color:#153b62">Mechanical Engineering Society</td></tr><tr><td style="padding-top:3px;font-size:12px;color:#6b7988">Marmara Üniversitesi</td></tr><tr><td style="padding-top:9px;font-size:12px"><a href="mailto:${email}" style="color:#1a5684;text-decoration:none">${email}</a></td></tr>${phoneRow}<tr><td style="padding-top:11px"><a href="${LINKEDIN}" target="_blank" style="display:inline-block;margin-right:13px;text-decoration:none"><img src="${a(LINKEDIN_ICON)}" width="23" height="23" alt="LinkedIn" style="width:23px;height:23px;border:0;vertical-align:middle"></a><a href="${INSTAGRAM}" target="_blank" style="display:inline-block;text-decoration:none"><img src="${a(INSTAGRAM_ICON)}" width="23" height="23" alt="Instagram" style="width:23px;height:23px;border:0;vertical-align:middle"></a></td></tr></table></td></tr></table>`;
+ const asset=p=>escapeHTML(absolute?assetUrl(p):p);
+ const name=escapeHTML(v.name||'Ad Soyad');
+ const role=escapeHTML(v.role||'Kulüp Görevi');
+ const email=escapeHTML(v.email||'eposta@ornek.com');
+ const phone=escapeHTML(v.phone||'');
+ const tel=(v.phone||'').replace(/[^+\d]/g,'');
+ const phoneRow=phone?`<tr><td style="padding:5px 0 0;font:12px/18px Arial,Helvetica,sans-serif;color:#536477"><a href="tel:${escapeHTML(tel)}" style="color:#315879;text-decoration:none">${phone}</a></td></tr>`:'';
+ return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border-spacing:0;font-family:Arial,Helvetica,sans-serif;max-width:500px;width:100%;color:#193650">
+<tr><td valign="top" width="78" style="width:78px;padding:2px 12px 0 0;vertical-align:top"><img src="${asset(LOGO)}" alt="Mechanical Engineering Society" width="66" height="66" style="display:block;width:66px;height:66px;max-width:66px;border:0;outline:none;text-decoration:none"></td>
+<td valign="top" style="vertical-align:top;border-left:3px solid #173e66;padding:0 0 0 13px">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border-spacing:0;font-family:Arial,Helvetica,sans-serif;width:100%">
+<tr><td style="padding:0;font:bold 17px/22px Arial,Helvetica,sans-serif;color:#123556">${name}</td></tr>
+<tr><td style="padding:3px 0 0;font:12px/18px Arial,Helvetica,sans-serif;color:#42617e">${role}</td></tr>
+<tr><td style="padding:9px 0 0;font:bold 12px/18px Arial,Helvetica,sans-serif;color:#173e66">Mechanical Engineering Society</td></tr>
+<tr><td style="padding:1px 0 0;font:11px/17px Arial,Helvetica,sans-serif;color:#66798b">Marmara Üniversitesi</td></tr>
+<tr><td style="padding:8px 0 0;font:12px/18px Arial,Helvetica,sans-serif;overflow-wrap:anywhere;word-break:break-word"><a href="mailto:${email}" style="color:#1b5c91;text-decoration:none">${email}</a></td></tr>
+${phoneRow}
+<tr><td style="padding:10px 0 0"><table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr><td style="padding:0 10px 0 0"><a href="${LINKEDIN}" title="MES LinkedIn" style="text-decoration:none"><img src="${asset(LINKEDIN_ICON)}" alt="LinkedIn" width="22" height="22" style="display:block;width:22px;height:22px;border:0"></a></td><td style="padding:0"><a href="${INSTAGRAM}" title="MES Instagram" style="text-decoration:none"><img src="${asset(INSTAGRAM_ICON)}" alt="Instagram" width="22" height="22" style="display:block;width:22px;height:22px;border:0"></a></td></tr></table></td></tr>
+</table></td></tr></table>`;
 }
 function render(){sig.innerHTML=makeSignature(values());message.textContent='';}ids.forEach(id=>inputs[id].addEventListener('input',render));render();
 function valid(){const v=values();if(!v.name||!v.role||!v.email||!inputs.email.checkValidity()){message.style.color='#a13737';message.textContent='Lütfen ad-soyad, görev ve geçerli e-posta adresini girin.';return false;}return true;}
